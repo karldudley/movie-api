@@ -11,7 +11,7 @@ def show(req, uid):
   if fetch_result == []:
     raise BadRequest(f"We don't have a movie with that ID of {uid}")
   else:
-    return fetch_result, 200
+    return f"<h1>{fetch_result}</h1>", 200
 
 def create(req):
   new_movie = req.get_json()

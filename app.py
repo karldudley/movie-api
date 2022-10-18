@@ -1,19 +1,35 @@
-from flask import Flask, jsonify, request, g
+from flask import Flask, jsonify, request, g, render_template
 from flask_cors import CORS
 from controllers import movies
 from werkzeug import exceptions
 import sqlite3
+import requests
 
 app = Flask(__name__)
 CORS(app)
 
 DATABASE = "./database/database.db"
 
-
 @app.route('/')
 def home():
     init_db()
     return jsonify({'message': 'Hello from Flask!'}), 200
+
+@app.route('/index')
+def index():
+    return render_template('index.html')
+
+@app.route('/new')
+def new_movie():
+    return render_template('new_movie.html')
+
+@app.route('/success')
+def success():
+    title = request.args.get('title')
+    rating = request.args.get('rating')
+    genre = request.args.get('genre')
+    r = requests.post('http://localhost:5000/api/movies', json={"title": title, "rating": rating, "genre": genre})
+    return render_template('success.html', title=title, rating=rating, genre=genre)
 
 @app.route('/api/movies', methods=['GET', 'POST'])
 def movies_handler():
@@ -33,7 +49,8 @@ def movie_handler(movie_id):
         # 'DELETE': movies.destroy
     }
     resp, code = fns[request.method](request, movie_id)
-    return jsonify(resp), code
+    # return jsonify(resp), code
+    return resp
 
 def get_db():
   db = getattr(g, '_database', None)

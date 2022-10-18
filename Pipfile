@@ -9,6 +9,7 @@ gunicorn = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
 waitress = "*"
+requests = "*"
 
 [dev-packages]
 pytest = "*"
