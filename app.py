@@ -28,9 +28,9 @@ def movies_handler():
 def movie_handler(movie_id):
     fns = {
         'GET': movies.show,
-        # 'PATCH': movies.update,
+        'PATCH': movies.update,
         # 'PUT': movies.update,
-        # 'DELETE': movies.destroy
+        'DELETE': movies.destroy
     }
     resp, code = fns[request.method](request, movie_id)
     return jsonify(resp), code
