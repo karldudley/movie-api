@@ -1,5 +1,6 @@
 ''' movies controller '''
 from werkzeug.exceptions import BadRequest
+import app
 
 movies = [
     {'id': 1, 'title': 'Shrek 2', 'rating': 5, 'genre': 'epic'},
@@ -8,7 +9,9 @@ movies = [
 ]
 
 def index(req):
-    return [c for c in movies], 200
+    # return [c for c in movies], 200
+    movie = app.query_db('select * from movie;')
+    return movie, 200
 
 def show(req, uid):
     return find_by_uid(uid), 200

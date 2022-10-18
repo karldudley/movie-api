@@ -7,4 +7,4 @@ CREATE TABLE movie (
   genre varchar(255) NOT NULL
 );
 
-INSERT INTO movie (title, rating, genre) VALUES ('Shrek 2', 5, 'epic'), ('Entergalactic', 4, 'animated rom-com')
+INSERT INTO movie (title, rating, genre) VALUES ('Shrek 2', 5, 'epic'), ('Entergalactic', 4, 'animated rom-com'), ('Prisoners', 4, 'thriller')

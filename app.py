@@ -1,23 +1,23 @@
-from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 from controllers import movies
 from werkzeug import exceptions
+import sqlite3
 
-db = SQLAlchemy()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
-db.init_app(app)
 CORS(app)
 
-class Movie(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
-    genre = db.Column(db.String(200), nullable=False)
+DATABASE = "./database/database.db"
+
+
+# class Movie(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(255), nullable=False)
+#     rating = db.Column(db.Integer, nullable=False)
+#     genre = db.Column(db.String(255), nullable=False)
     
-    def __repr__(self):
-        return self.name
+#     def __repr__(self):
+#         return self.name
 
 @app.route('/')
 def home():
@@ -45,10 +45,16 @@ def movie_handler(movie_id):
     return jsonify(resp), code
 
 def get_db():
-  with app.app_context():
-    from app import db
-    db.create_all()
+  db = getattr(g, '_database', None)
+  if db is None:
+    db = g._database = sqlite3.connect(DATABASE)
   return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+  db = getattr(g, '_database', None)
+  if db is not None:
+    db.close()
 
 def init_db():
   with app.app_context():
@@ -56,6 +62,13 @@ def init_db():
     with app.open_resource('schema.sql', mode='r') as f:
       db.cursor().executescript(f.read())
     db.commit()
+
+def query_db(query, args=(), one=False):
+  cur = get_db().execute(query, args)
+  get_db().commit()
+  rv = cur.fetchall()
+  cur.close()
+  return (rv[0] if rv else None) if one else rv
 
 @app.errorhandler(exceptions.NotFound)
 def handle_404(err):
