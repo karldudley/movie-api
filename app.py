@@ -23,6 +23,10 @@ def index():
 def new_movie():
     return render_template('new_movie.html')
 
+@app.route('/movies')
+def show_all():
+    return movies.show_all()
+
 @app.route('/success')
 def success():
     title = request.args.get('title')
@@ -49,8 +53,7 @@ def movie_handler(movie_id):
         'DELETE': movies.destroy
     }
     resp, code = fns[request.method](request, movie_id)
-    # return jsonify(resp), code
-    return resp
+    return jsonify(resp), code
 
 def get_db():
   db = getattr(g, '_database', None)

@@ -6,12 +6,19 @@ def index(req):
     movie = app.query_db('select * from movie;')
     return movie, 200
 
+def show_all():
+    movie = app.query_db('select * from movie;')
+    html = ""
+    for x in movie:
+        html += f"<h2>{x[1]}</h2>"
+    return html, 200
+
 def show(req, uid):
   fetch_result = find_by_uid(uid)
   if fetch_result == []:
     raise BadRequest(f"We don't have a movie with that ID of {uid}")
   else:
-    return f"<h1>{fetch_result}</h1>", 200
+    return fetch_result, 200
 
 def create(req):
   new_movie = req.get_json()
