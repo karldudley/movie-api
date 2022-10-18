@@ -10,15 +10,6 @@ CORS(app)
 DATABASE = "./database/database.db"
 
 
-# class Movie(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String(255), nullable=False)
-#     rating = db.Column(db.Integer, nullable=False)
-#     genre = db.Column(db.String(255), nullable=False)
-    
-#     def __repr__(self):
-#         return self.name
-
 @app.route('/')
 def home():
     init_db()
@@ -37,9 +28,9 @@ def movies_handler():
 def movie_handler(movie_id):
     fns = {
         'GET': movies.show,
-        'PATCH': movies.update,
-        'PUT': movies.update,
-        'DELETE': movies.destroy
+        # 'PATCH': movies.update,
+        # 'PUT': movies.update,
+        # 'DELETE': movies.destroy
     }
     resp, code = fns[request.method](request, movie_id)
     return jsonify(resp), code
